@@ -1,1 +1,1 @@
-include ':app', ':navigatorannotation', ':navigatorcompiler'
+include ':example', ':navigatorannotation', ':navigatorcompiler'
