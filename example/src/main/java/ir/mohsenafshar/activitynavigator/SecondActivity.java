@@ -4,10 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import ir.mohsenafshar.Navigator;
-import ir.mohsenafshar.navigatorannotation.NavigatorAnnotation;
+import ir.mohsenafshar.navigatorannotation.Navigate;
 
-@NavigatorAnnotation
+@Navigate
 public class SecondActivity extends AppCompatActivity {
 
     public static final String TAG = "SECONDACTIVITY";

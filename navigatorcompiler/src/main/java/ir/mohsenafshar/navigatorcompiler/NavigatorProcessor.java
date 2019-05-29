@@ -6,6 +6,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,11 +26,13 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
-import ir.mohsenafshar.navigatorannotation.NavigatorAnnotation;
+import ir.mohsenafshar.navigatorannotation.IntExtra;
+import ir.mohsenafshar.navigatorannotation.Navigate;
+import ir.mohsenafshar.navigatorannotation.StringExtra;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes({
-        "ir.mohsenafshar.navigatorannotation.NavigatorAnnotation"
+        "ir.mohsenafshar.navigatorannotation.Navigate"
 })
 public class NavigatorProcessor extends AbstractProcessor {
 
@@ -42,6 +45,7 @@ public class NavigatorProcessor extends AbstractProcessor {
     private Messager messager;
     private Elements elements;
     private Map<String, String> activitiesWithPackage;
+    private Map<String, Container> AnnotationValuesWithActivities;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -50,13 +54,14 @@ public class NavigatorProcessor extends AbstractProcessor {
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
         activitiesWithPackage = new HashMap<>();
+        AnnotationValuesWithActivities = new HashMap<>();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         try {
-            for (Element element : roundEnvironment.getElementsAnnotatedWith(NavigatorAnnotation.class)) {
+            for (Element element : roundEnvironment.getElementsAnnotatedWith(Navigate.class)) {
                 if (element.getKind() != ElementKind.CLASS) {
                     messager.printMessage(Diagnostic.Kind.ERROR, "it's just can applied to CLASS");
                     return true;
@@ -66,6 +71,14 @@ public class NavigatorProcessor extends AbstractProcessor {
                 activitiesWithPackage.put(
                         typeElement.getSimpleName().toString(),
                         elements.getPackageOf(typeElement).getQualifiedName().toString());
+
+                Navigate navigate = typeElement.getAnnotation(Navigate.class);
+                if (navigate != null) {
+                    StringExtra[] stringExtras = navigate.stringExtra();
+                    IntExtra[] intExtras = navigate.intExtra();
+
+                    AnnotationValuesWithActivities.put(typeElement.getSimpleName().toString(), new Container(stringExtras, intExtras));
+                }
             }
 
             TypeSpec.Builder navigatorClass = TypeSpec.classBuilder("Navigator")
@@ -75,6 +88,7 @@ public class NavigatorProcessor extends AbstractProcessor {
                 String activityName = element.getKey();
                 String packageName = element.getValue();
                 ClassName activityClass = ClassName.get(packageName, activityName);
+                Container container = AnnotationValuesWithActivities.get(activityName);
 
                 MethodSpec intentMethodWithoutExtra = MethodSpec
                         .methodBuilder("get" + activityName + "Intent")
@@ -86,25 +100,38 @@ public class NavigatorProcessor extends AbstractProcessor {
                 navigatorClass.addMethod(intentMethodWithoutExtra);
 
                 MethodSpec startActivityMethodWithoutExtra = MethodSpec
-                        .methodBuilder( METHOD_PREFIX + activityName)
+                        .methodBuilder(METHOD_PREFIX + activityName)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         .addParameter(classContext, "context")
                         .addStatement("$L.startActivity(new $T($L, $L))", "context", classIntent, "context", activityClass + ".class")
                         .build();
                 navigatorClass.addMethod(startActivityMethodWithoutExtra);
 
-                MethodSpec intentMethod = MethodSpec
+                MethodSpec.Builder builder = MethodSpec
                         .methodBuilder(METHOD_PREFIX + activityName)
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         .addParameter(classContext, "context")
                         .addParameter(classBundle, "bundle")
                         //.addStatement("return new $T($L, $L)", classIntent, "context", activityClass + ".class")
                         .addStatement("$T intent = new $T($L, $L)", classIntent, classIntent, "context", activityClass + ".class")
-                        .addStatement("intent.putExtras($L)", "bundle")
-                        .addStatement("$L.startActivity(intent)", "context")
-                        //.addStatement("return new $T($L, $L).putExtras($L)", classIntent, "context", activityClass + ".class", "bundle")
-                        .build();
+                        .addStatement("intent.putExtras($L)", "bundle");
 
+                for (StringExtra stringExtra : container.stringExtras) {
+                    String key = stringExtra.key();
+                    String value = stringExtra.value();
+                    if (!key.equals("") && !value.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (IntExtra intExtra : container.intExtras) {
+                    String key = intExtra.key();
+                    int value = intExtra.value();
+                    if (!key.equals("") && value != 0)
+                        builder.addStatement("intent.putExtra(\"$L\", $L)", key, value);
+                }
+
+                builder.addStatement("$L.startActivity(intent)", "context");
+                MethodSpec intentMethod = builder.build();
                 navigatorClass.addMethod(intentMethod);
             }
 
@@ -118,6 +145,16 @@ public class NavigatorProcessor extends AbstractProcessor {
         }
 
         return true;
+    }
+
+    private class Container {
+        StringExtra[] stringExtras;
+        IntExtra[] intExtras;
+
+        public Container(StringExtra[] stringExtras, IntExtra[] intExtras) {
+            this.stringExtras = stringExtras;
+            this.intExtras = intExtras;
+        }
     }
 
 }

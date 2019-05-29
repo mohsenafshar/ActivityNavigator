@@ -4,9 +4,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import ir.mohsenafshar.Navigator;
-import ir.mohsenafshar.navigatorannotation.NavigatorAnnotation;
+import ir.mohsenafshar.navigatorannotation.IntExtra;
+import ir.mohsenafshar.navigatorannotation.Navigate;
+import ir.mohsenafshar.navigatorannotation.StringExtra;
 
-@NavigatorAnnotation
+@Navigate
+        (
+                stringExtra = {
+                        @StringExtra(key = "STRING_KEY", value = "STRING_VALUE"),
+                        @StringExtra(key = "STRING_KEY", value = "STRING_VALUE")
+                },
+                intExtra = {
+                        @IntExtra(key = "INTEGER_KEY", value = 10),
+                        @IntExtra(key = "INTEGER_KEY", value = 20)
+                }
+        )
 public class MainActivity extends AppCompatActivity {
 
     @Override
