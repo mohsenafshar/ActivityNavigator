@@ -13,7 +13,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 ext {
-    bintrayRepo = "activitynavigator"        //repository name in bintray dashbord
+    bintrayRepo = "ActivityNavigator"        //repository name in bintray dashbord
     bintrayName = "ir.mohsenafshar.navigatorcompiler"        // package name of bintray repository
 
     libraryName = "navigatorcompiler"     //module name in android studio

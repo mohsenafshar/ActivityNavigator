@@ -23,4 +23,6 @@ public @interface Navigate {
     LongExtra[] longExtra() default @LongExtra();
 
     ShortExtra[] shortExtra() default @ShortExtra();
+
+    ByteExtra[] byteExtra() default @ByteExtra();
 }

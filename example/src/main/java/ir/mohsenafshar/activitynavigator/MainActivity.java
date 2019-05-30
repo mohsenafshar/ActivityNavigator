@@ -3,7 +3,7 @@ package ir.mohsenafshar.activitynavigator;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import ir.mohsenafshar.Navigator;
+import ir.mohsenafshar.activitynavigator.Navigator;
 import ir.mohsenafshar.navigatorannotation.IntExtra;
 import ir.mohsenafshar.navigatorannotation.Navigate;
 import ir.mohsenafshar.navigatorannotation.StringExtra;
