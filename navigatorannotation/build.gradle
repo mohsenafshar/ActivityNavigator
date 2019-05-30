@@ -6,3 +6,37 @@ dependencies {
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+
+ext {
+    bintrayRepo = "activitynavigator"        //repository name in bintray dashbord
+    bintrayName = "ir.mohsenafshar.navigatorannotation"        // package name of bintray repository
+
+    libraryName = "navigatorannotation"     //module name in android studio
+
+    //Artifact Information ir.mohsenafshar.androidnavigator:navigationcompiler:1.0.0
+    publishedGroupId = 'ir.mohsenafshar.activitynavigator'       //id
+    artifact = "navigator-annotation"        //artifact
+    libraryVersion = "1.0.0"
+
+
+    libraryDescription = "annotations module"
+    siteUrl = "https://github.com/mohsenafshar/ActivityNavigator"
+    gitUrl = "https://github.com/mohsenafshar/ActivityNavigator.git"
+    developerId = "mohsenafshar"
+    developerName = "mohsen afshar"
+    developerEmail = "mohsenafshar_ph@yahoo.com"
+    licenseName = "The Apache Software License, Version 2.0"
+    licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    allLicenses = ["Apache-2.0"]
+
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+}
