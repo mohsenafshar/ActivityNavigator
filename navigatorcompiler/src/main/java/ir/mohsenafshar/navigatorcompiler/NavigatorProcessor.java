@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +27,15 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
+import ir.mohsenafshar.navigatorannotation.BooleanExtra;
+import ir.mohsenafshar.navigatorannotation.ByteExtra;
+import ir.mohsenafshar.navigatorannotation.CharExtra;
+import ir.mohsenafshar.navigatorannotation.DoubleExtra;
+import ir.mohsenafshar.navigatorannotation.FloatExtra;
 import ir.mohsenafshar.navigatorannotation.IntExtra;
+import ir.mohsenafshar.navigatorannotation.LongExtra;
 import ir.mohsenafshar.navigatorannotation.Navigate;
+import ir.mohsenafshar.navigatorannotation.ShortExtra;
 import ir.mohsenafshar.navigatorannotation.StringExtra;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -116,10 +124,38 @@ public class NavigatorProcessor extends AbstractProcessor {
                         .addStatement("$T intent = new $T($L, $L)", classIntent, classIntent, "context", activityClass + ".class")
                         .addStatement("intent.putExtras($L)", "bundle");
 
-                for (StringExtra stringExtra : container.stringExtras) {
-                    String key = stringExtra.key();
-                    String value = stringExtra.value();
-                    if (!key.equals("") && !value.equals(""))
+                for (BooleanExtra booleanExtra : container.booleanExtras) {
+                    String key = booleanExtra.key();
+                    Boolean value = booleanExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (ByteExtra byteExtra : container.byteExtras) {
+                    String key = byteExtra.key();
+                    Byte value = byteExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (CharExtra charExtra : container.charExtras) {
+                    String key = charExtra.key();
+                    char value = charExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (DoubleExtra doubleExtra : container.doubleExtras) {
+                    String key = doubleExtra.key();
+                    double value = doubleExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (FloatExtra floatExtra : container.floatExtras) {
+                    String key = floatExtra.key();
+                    float value = floatExtra.value();
+                    if (!key.equals(""))
                         builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
                 }
 
@@ -128,6 +164,27 @@ public class NavigatorProcessor extends AbstractProcessor {
                     int value = intExtra.value();
                     if (!key.equals("") && value != 0)
                         builder.addStatement("intent.putExtra(\"$L\", $L)", key, value);
+                }
+
+                for (LongExtra longExtra : container.longExtras) {
+                    String key = longExtra.key();
+                    float value = longExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (ShortExtra shortExtra: container.shortExtras) {
+                    String key = shortExtra.key();
+                    float value = shortExtra.value();
+                    if (!key.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
+                }
+
+                for (StringExtra stringExtra : container.stringExtras) {
+                    String key = stringExtra.key();
+                    String value = stringExtra.value();
+                    if (!key.equals("") && !value.equals(""))
+                        builder.addStatement("intent.putExtra(\"$L\", \"$L\")", key, value);
                 }
 
                 builder.addStatement("$L.startActivity(intent)", "context");
@@ -148,8 +205,15 @@ public class NavigatorProcessor extends AbstractProcessor {
     }
 
     private class Container {
-        StringExtra[] stringExtras;
+        BooleanExtra[] booleanExtras;
+        ByteExtra[] byteExtras;
+        CharExtra[] charExtras;
+        DoubleExtra[] doubleExtras;
+        FloatExtra[] floatExtras;
         IntExtra[] intExtras;
+        LongExtra[] longExtras;
+        ShortExtra[] shortExtras;
+        StringExtra[] stringExtras;
 
         public Container(StringExtra[] stringExtras, IntExtra[] intExtras) {
             this.stringExtras = stringExtras;
