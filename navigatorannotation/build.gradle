@@ -16,7 +16,7 @@ ext {
     //Artifact Information ir.mohsenafshar.androidnavigator:navigationcompiler:1.0.0
     publishedGroupId = 'ir.mohsenafshar.activitynavigator'       //id
     artifact = "navigator-annotation"        //artifact
-    libraryVersion = "1.0.0"
+    libraryVersion = "1.0.1"
 
 
     libraryDescription = "annotations module"
