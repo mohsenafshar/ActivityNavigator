@@ -10,26 +10,8 @@ Create Intent Objects For Simple Navigation
 
 ### Usage
 
+MainActivity:
 ```
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
-import ir.mohsenafshar.Navigator;
-import ir.mohsenafshar.navigatorannotation.IntExtra;
-import ir.mohsenafshar.navigatorannotation.Navigate;
-import ir.mohsenafshar.navigatorannotation.StringExtra;
-
-@Navigate
-    (
-        stringExtra = {
-            @StringExtra(key = "STRING_KEY", value = "STRING_VALUE"),
-            @StringExtra(key = "STRING_KEY", value = "STRING_VALUE")
-        },
-        intExtra = {
-            @IntExtra(key = "INTEGER_KEY", value = 10),
-            @IntExtra(key = "INTEGER_KEY", value = 20)
-        }
-    )
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -37,11 +19,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("KEY", "VALUE");
-        Navigator.startSecondActivity(this, bundle);
+        Navigator.startSecondActivity(this);
     }
 }
 ```
 
+SecondActivity:
+```
+@Navigate
+        (
+            stringExtra = {
+                @StringExtra(key = "STRING_KEY_1", value = "STRING_VALUE_1"),
+                @StringExtra(key = "STRING_KEY_2", value = "STRING_VALUE_2")
+            },
+            intExtra = {
+                @IntExtra(key = "INTEGER_KEY_1", value = 10),
+                @IntExtra(key = "INTEGER_KEY_2", value = 20)
+            }
+        )
+public class SecondActivity extends AppCompatActivity {
+
+    private static final String TAG = SecondActivity.class.getSimpleName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Log.d(TAG, "onCreate: " + extras.get("STRING_KEY_1"));
+            Log.d(TAG, "onCreate: " + extras.get("INTEGER_KEY_1"));
+        }
+    }
+}
+```
 For more information look at generated navigator class.
