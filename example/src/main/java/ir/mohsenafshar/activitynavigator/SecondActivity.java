@@ -1,8 +1,9 @@
 package ir.mohsenafshar.activitynavigator;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import ir.mohsenafshar.navigatorannotation.IntExtra;
 import ir.mohsenafshar.navigatorannotation.Navigate;
